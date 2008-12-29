@@ -153,7 +153,7 @@
 #define F_OWNER_PID	1
 #define F_OWNER_PGRP	2
 
-struct f_owner_ex {
+struct __kernel_f_owner_ex {
 	int	type;
 	__kernel_pid_t	pid;
 };
@@ -193,7 +193,7 @@ struct f_owner_ex {
 #define __ARCH_FLOCK_PAD
 #endif
 
-struct flock {
+struct __kernel_flock {
 	short	l_type;
 	short	l_whence;
 	__kernel_off_t	l_start;
@@ -208,7 +208,7 @@ struct flock {
 #define __ARCH_FLOCK64_PAD
 #endif
 
-struct flock64 {
+struct __kernel_flock64 {
 	short  l_type;
 	short  l_whence;
 	__kernel_loff_t l_start;
