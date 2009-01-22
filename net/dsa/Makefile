@@ -2,6 +2,7 @@
 obj-$(CONFIG_NET_DSA_TAG_DSA) += tag_dsa.o
 obj-$(CONFIG_NET_DSA_TAG_EDSA) += tag_edsa.o
 obj-$(CONFIG_NET_DSA_TAG_TRAILER) += tag_trailer.o
+obj-$(CONFIG_NET_DSA_TAG_STPID) += tag_stpid.o
 
 # switch drivers
 obj-$(CONFIG_NET_DSA_MV88E6XXX) += mv88e6xxx.o
