@@ -6,6 +6,7 @@
 #include <linux/compiler.h>
 #include <linux/in.h>
 #include <linux/in6.h>
+#include <limits.h>
 
 /* Responses from hook functions. */
 #define NF_DROP 0
