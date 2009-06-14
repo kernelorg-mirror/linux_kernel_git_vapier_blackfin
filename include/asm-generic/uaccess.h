@@ -37,14 +37,14 @@ static inline void set_fs(mm_segment_t fs)
 #define VERIFY_READ	0
 #define VERIFY_WRITE	1
 
-#define access_ok(type, addr, size) __access_ok((unsigned long)(addr),(size))
+#define access_ok(type, addr, size) __access_ok((addr), (size))
 
 /*
  * The architecture should really override this if possible, at least
  * doing a check on the get_fs()
  */
 #ifndef __access_ok
-static inline int __access_ok(unsigned long addr, unsigned long size)
+static inline int __access_ok(void __user *ptr, unsigned long size)
 {
 	return 1;
 }
