@@ -143,15 +143,16 @@ static inline __must_check long __copy_to_user(void __user *to,
 #define __put_user(x, ptr) \
 ({								\
 	__typeof__(*(ptr)) __x = (x);				\
+	__typeof__(*(ptr)) *__p = (ptr);			\
 	int __pu_err = -EFAULT;					\
-        __chk_user_ptr(ptr);                                    \
-	switch (sizeof (*(ptr))) {				\
+	__chk_user_ptr(__p);					\
+	switch (sizeof(*__p)) {					\
 	case 1:							\
 	case 2:							\
 	case 4:							\
 	case 8:							\
-		__pu_err = __put_user_fn(sizeof (*(ptr)),	\
-					 ptr, &__x);		\
+		__pu_err = __put_user_fn(sizeof(*__p),		\
+					 __p, &__x);		\
 		break;						\
 	default:						\
 		__put_user_bad();				\
@@ -162,9 +163,11 @@ static inline __must_check long __copy_to_user(void __user *to,
 
 #define put_user(x, ptr)					\
 ({								\
+	__typeof__(*(ptr)) _x = (x);				\
+	__typeof__(*(ptr)) *_p = (ptr);				\
 	might_sleep();						\
-	access_ok(VERIFY_WRITE, ptr, sizeof(*ptr)) ?		\
-		__put_user(x, ptr) :				\
+	access_ok(VERIFY_WRITE, _p, sizeof(*_p)) ?		\
+		__put_user(_x, _p) :				\
 		-EFAULT;					\
 })
 
@@ -178,35 +181,36 @@ extern int __put_user_bad(void) __attribute__((noreturn));
 
 #define __get_user(x, ptr)					\
 ({								\
+	__typeof__(*(ptr)) *__p = (ptr);			\
 	int __gu_err = -EFAULT;					\
-	__chk_user_ptr(ptr);					\
-	switch (sizeof(*(ptr))) {				\
+	__chk_user_ptr(__p);					\
+	switch (sizeof(*__p)) {					\
 	case 1: {						\
 		unsigned char __x;				\
-		__gu_err = __get_user_fn(sizeof (*(ptr)),	\
-					 ptr, &__x);		\
-		(x) = *(__force __typeof__(*(ptr)) *) &__x;	\
+		__gu_err = __get_user_fn(sizeof(*__p),		\
+					 __p, &__x);		\
+		(x) = *(__force __typeof__(*__p) *) &__x;	\
 		break;						\
 	};							\
 	case 2: {						\
 		unsigned short __x;				\
-		__gu_err = __get_user_fn(sizeof (*(ptr)),	\
-					 ptr, &__x);		\
-		(x) = *(__force __typeof__(*(ptr)) *) &__x;	\
+		__gu_err = __get_user_fn(sizeof(*__p),		\
+					 __p, &__x);		\
+		(x) = *(__force __typeof__(*__p) *) &__x;	\
 		break;						\
 	};							\
 	case 4: {						\
 		unsigned int __x;				\
-		__gu_err = __get_user_fn(sizeof (*(ptr)),	\
-					 ptr, &__x);		\
-		(x) = *(__force __typeof__(*(ptr)) *) &__x;	\
+		__gu_err = __get_user_fn(sizeof(*__p),		\
+					 __p, &__x);		\
+		(x) = *(__force __typeof__(*__p) *) &__x;	\
 		break;						\
 	};							\
 	case 8: {						\
 		unsigned long long __x;				\
-		__gu_err = __get_user_fn(sizeof (*(ptr)),	\
-					 ptr, &__x);		\
-		(x) = *(__force __typeof__(*(ptr)) *) &__x;	\
+		__gu_err = __get_user_fn(sizeof(*__p),		\
+					 __p, &__x);		\
+		(x) = *(__force __typeof__(*__p) *) &__x;	\
 		break;						\
 	};							\
 	default:						\
@@ -218,9 +222,10 @@ extern int __put_user_bad(void) __attribute__((noreturn));
 
 #define get_user(x, ptr)					\
 ({								\
+	__typeof__(*(ptr)) *_p = (ptr);				\
 	might_sleep();						\
-	access_ok(VERIFY_READ, ptr, sizeof(*ptr)) ?		\
-		__get_user(x, ptr) :				\
+	access_ok(VERIFY_READ, _p, sizeof(*_p)) ?		\
+		__get_user(x, _p) :				\
 		-EFAULT;					\
 })
 
