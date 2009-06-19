@@ -76,4 +76,10 @@ csum_tcpudp_magic(__be32 saddr, __be32 daddr, unsigned short len,
  */
 extern __sum16 ip_compute_csum(const void *buff, int len);
 
+/*
+ * The do_csum() interface is "internal" to the generic checksum code.  It
+ * should only be leveraged by checksum implementations and no one else.
+ */
+extern unsigned int do_csum(const unsigned char *buff, int len);
+
 #endif /* __ASM_GENERIC_CHECKSUM_H */
