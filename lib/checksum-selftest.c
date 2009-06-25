@@ -15,49 +15,72 @@
 #include <net/checksum.h>
 #include <asm/byteorder.h>
 
-
-struct do_csum_data {
-	unsigned int ret;
-	unsigned char *buff;
+struct csum_data {
+	const char *name;
+	unsigned short csum_ret;
+	__sum16 partial_ret;
+	const unsigned char *buff;
 	int len;
+	__wsum wsum;
 };
-#define DO_CSUM_DATA(_num, _ret) \
+#define CSUM_DATA(_id, _csum_ret, _partial_ret) \
 { \
-	.ret = _ret, \
-	.buff = do_csum_data##_num, \
-	.len = ARRAY_SIZE(do_csum_data##_num), \
+	.name = "csum_data"#_id, \
+	.csum_ret = _csum_ret, \
+	.partial_ret = _partial_ret, \
+	.buff = csum_data##_id, \
+	.len = ARRAY_SIZE(csum_data##_id), \
+	/*.wsum = _wsum,*/ \
 }
-static unsigned char __initdata do_csum_data1[] = {
+static unsigned char __initdata csum_data1a[] = {
 	0x20,
 };
-static unsigned char __initdata do_csum_data2[] = {
+static unsigned char __initdata csum_data1b[] = {
+	0x74,
+};
+static unsigned char __initdata csum_data2a[] = {
 	0x0d, 0x0a,
 };
-static unsigned char __initdata do_csum_data3[] = {
+static unsigned char __initdata csum_data3a[] = {
+	0xff, 0xfd, 0x01,
+};
+static unsigned char __initdata csum_data3b[] = {
 	0xff, 0xfb, 0x01,
 };
-static unsigned char __initdata do_csum_data4[] = {
+static unsigned char __initdata csum_data4a[] = {
 	0x63, 0x68, 0x65, 0x64,
 };
-static unsigned char __initdata do_csum_data5[] = {
+static unsigned char __initdata csum_data5a[] = {
 	0x67, 0x72, 0x5d, 0x0d, 0x00,
 };
-static unsigned char __initdata do_csum_data6[] = {
+static unsigned char __initdata csum_data5b[] = {
+	0x20, 0x20, 0x31, 0x30, 0x33,
+};
+static unsigned char __initdata csum_data6a[] = {
 	0x20, 0x20, 0x31, 0x30, 0x38, 0x20
 };
-static unsigned char __initdata do_csum_data7[] = {
+static unsigned char __initdata csum_data7a[] = {
 	0x20, 0x20, 0x20, 0x35, 0x37, 0x20, 0x20,
 };
-static unsigned char __initdata do_csum_data8[] = {
+static unsigned char __initdata csum_data8a[] = {
 	0x00, 0x00, 0x00, 0x00, 0x7f, 0x0f, 0x00, 0x02,
 };
-static unsigned char __initdata do_csum_data9[] = {
+static unsigned char __initdata csum_data8b[] = {
+	0x8b, 0xd1, 0x89, 0x13, 0x00, 0x08, 0x69, 0x97,
+};
+static unsigned char __initdata csum_data8c[] = {
+	0x3, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+};
+static unsigned char __initdata csum_data9a[] = {
+	0xb6, 0xf9, 0x89, 0x13, 0x0, 0x9, 0x3e, 0x6d, 0x0,
+};
+static unsigned char __initdata csum_data9b[] = {
 	0x20, 0x20, 0x31, 0x31, 0x34, 0x20, 0x20, 0x20, 0x31,
 };
-static unsigned char __initdata do_csum_data10[] = {
+static unsigned char __initdata csum_data10a[] = {
 	0xd, 0xa, 0x72, 0x6f, 0x6f, 0x74, 0x3a, 0x2f, 0x3e, 0x20
 };
-static unsigned char __initdata do_csum_data255[] = {
+static unsigned char __initdata csum_data255a[] = {
 	0x20, 0x34, 0x34, 0x34, 0x20, 0x53, 0x20, 0x20, 0x20, 0x20, 0x2d,
 	0x2f, 0x62, 0x69, 0x6e, 0x2f, 0x73, 0x68, 0x20, 0x0d, 0x0a, 0x20,
 	0x20, 0x31, 0x30, 0x35, 0x20, 0x72, 0x6f, 0x6f, 0x74, 0x20, 0x20,
@@ -83,30 +106,40 @@ static unsigned char __initdata do_csum_data255[] = {
 	0x31, 0x30, 0x20, 0x72, 0x6f, 0x6f, 0x74, 0x20, 0x20, 0x20, 0x20,
 	0x20, 0x20
 };
-static struct do_csum_data __initdata do_csum_data[] = {
-	DO_CSUM_DATA(1, 0x0020),
-	DO_CSUM_DATA(2, 0x0a0d),
-	DO_CSUM_DATA(3, 0xfc00),
-	DO_CSUM_DATA(4, 0xccc8),
-	DO_CSUM_DATA(5, 0x7fc4),
-	DO_CSUM_DATA(6, 0x7089),
-	DO_CSUM_DATA(7, 0x7597),
-	DO_CSUM_DATA(8, 0x117f),
-	DO_CSUM_DATA(9, 0x91d6),
-	DO_CSUM_DATA(10, 0x3d67),
-	DO_CSUM_DATA(255, 0x4f96),
-};
+static struct csum_data __initdata csum_data[] = {
+	CSUM_DATA(1a, 0x0020, 0),
+	CSUM_DATA(1b, 0x0074, 0x0),
+	CSUM_DATA(2a, 0x0a0d, 0),
+	CSUM_DATA(3a, 0xfc00, 0),
+	CSUM_DATA(3b, 0xfe00, 0x0),
+	CSUM_DATA(4a, 0xccc8, 0),
+	CSUM_DATA(5a, 0x7fc4, 0),
+	CSUM_DATA(5b, 0x5084, 0x0),
+	CSUM_DATA(6a, 0x7089, 0),
+	CSUM_DATA(7a, 0x7597, 0),
+	CSUM_DATA(8a, 0x117f, 0),
+	CSUM_DATA(8b, 0x1011eefe, 0x11016a80),
+	CSUM_DATA(8c, 0x00008781, 0x847e),
+	CSUM_DATA(9a, 0x91d6, 0),
+	CSUM_DATA(9b, 0x1101eefe, 0x11016b80),
+	CSUM_DATA(10a, 0x3d67, 0),
+	CSUM_DATA(255a, 0x4f96, 0),
 
-static int __init do_csum_selftest(void)
+};
+static unsigned char __initdata csum_scratch[1024];
+
+static int __init csum_selftest(void)
 {
 	int i, ret;
-	unsigned int tret, eret;
+	unsigned short hret, tret, eret;
 
 	ret = 0;
-	for (i = 0; i < ARRAY_SIZE(do_csum_data); ++i) {
-		unsigned char *buff = do_csum_data[i].buff;
-		int len = do_csum_data[i].len;
-		int hret = le16_to_cpu(do_csum_data[i].ret);
+	for (i = 0; i < ARRAY_SIZE(csum_data); ++i) {
+		const unsigned char *buff = csum_data[i].buff;
+		int len = csum_data[i].len;
+		const char *tname = csum_data[i].name;
+
+		hret = le16_to_cpu(csum_data[i].csum_ret);
 
 #ifdef CONFIG_GENERIC_CSUM
 		/*
@@ -117,8 +150,8 @@ static int __init do_csum_selftest(void)
 		eret = hret;
 		tret = do_csum(buff, len);
 		if (tret != eret) {
-			pr_err("%s: (d_c) test %i: %#x != %#x: FAIL\n",
-				__func__, i, tret, eret);
+			pr_err("%s: (d_c) test %s: %#x != %#x: FAIL\n",
+				__func__, tname, tret, eret);
 			ret = 1;
 		}
 #endif
@@ -126,8 +159,8 @@ static int __init do_csum_selftest(void)
 		eret = ~hret;
 		tret = ip_compute_csum(buff, len);
 		if (tret != eret) {
-			pr_err("%s: (i_c_c) test %i: %#x != %#x: FAIL\n",
-				__func__, i, tret, eret);
+			pr_err("%s: (i_c_c) test %s: %#x != %#x: FAIL\n",
+				__func__, tname, tret, eret);
 			ret = 1;
 		}
 
@@ -135,85 +168,28 @@ static int __init do_csum_selftest(void)
 			eret = ~hret;
 			tret = ip_fast_csum(buff, len / 4);
 			if (tret != eret) {
-				pr_err("%s: (i_f_c) test %i: %#x != %#x: FAIL\n",
-					__func__, i, tret, eret);
+				pr_err("%s: (i_f_c) test %s: %#x != %#x: FAIL\n",
+					__func__, tname, tret, eret);
 				ret = 1;
 			}
 		}
-	}
 
-	return ret;
-}
+		hret = le16_to_cpu(csum_data[i].partial_ret);
 
-
-struct csum_partial_data {
-	__wsum ret;
-	const void *buff;
-	int len;
-	__wsum wsum;
-};
-#define CSUM_PARTIAL_DATA(_num, _ret, _wsum) \
-{ \
-	.ret = _ret, \
-	.buff = csum_partial_data##_num, \
-	.len = ARRAY_SIZE(csum_partial_data##_num), \
-	.wsum = _wsum, \
-}
-static unsigned char __initdata csum_partial_data1[] = {
-	0x74,
-};
-static unsigned char __initdata csum_partial_data2[] = {
-	0x0d, 0x0a,
-};
-static unsigned char __initdata csum_partial_data3[] = {
-	0xff, 0xfd, 0x01,
-};
-static unsigned char __initdata csum_partial_data5[] = {
-	0x20, 0x20, 0x31, 0x30, 0x33,
-};
-static unsigned char __initdata csum_partial_data8[] = {
-	0x8b, 0xd1, 0x89, 0x13, 0x00, 0x08, 0x69, 0x97,
-};
-static unsigned char __initdata csum_partial_data8b[] = {
-	0x3, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-};
-static unsigned char __initdata csum_partial_data9[] = {
-	0xb6, 0xf9, 0x89, 0x13, 0x0, 0x9, 0x3e, 0x6d, 0x0,
-};
-static struct csum_partial_data __initdata csum_partial_data[] = {
-	CSUM_PARTIAL_DATA(1,  0x00000074, 0x0),
-	CSUM_PARTIAL_DATA(2,  0x00000a0d, 0x0),
-	CSUM_PARTIAL_DATA(3,  0x0000fe00, 0x0),
-	CSUM_PARTIAL_DATA(5,  0x00005084, 0x0),
-	CSUM_PARTIAL_DATA(8,  0x1101eefe, 0x11016a80),
-	CSUM_PARTIAL_DATA(8b, 0x00008781, 0x847e),
-	CSUM_PARTIAL_DATA(9,  0x1101eefe, 0x11016b80),
-};
-
-static unsigned char __initdata csum_partial_scratch[1024];
-static int __init csum_partial_selftest(void)
-{
-	int i, ret;
-	unsigned short tret, eret;
-
-	ret = 0;
-	for (i = 0; i < ARRAY_SIZE(csum_partial_data); ++i) {
-		const unsigned char *buff = csum_partial_data[i].buff;
-		int len = csum_partial_data[i].len;
-		__wsum wsum = csum_partial_data[i].wsum;
-		eret = le16_to_cpu(csum_partial_data[i].ret);
-
-		tret = csum_partial(buff, len, wsum);
+		eret = hret;
+		tret = csum_fold(csum_partial(buff, len, 0/*wsum*/));
 		if (tret != eret) {
-			pr_err("%s: (c_p) test %i: %#x != %#x: FAIL\n",
-				__func__, i, tret, eret);
+			pr_err("%s: (c_p) test %s: %#x != %#x: FAIL\n",
+				__func__, tname, tret, eret);
 			ret = 1;
 		}
 
-		tret = csum_partial_copy(buff, csum_partial_scratch, len, wsum);
+		BUG_ON(sizeof(csum_scratch) < len);
+		eret = hret;
+		tret = csum_fold(csum_partial_copy(buff, csum_scratch, len, 0/*wsum*/));
 		if (tret != eret) {
-			pr_err("%s: (c_p_c) test %i: %#x != %#x: FAIL\n",
-				__func__, i, tret, eret);
+			pr_err("%s: (c_p_c) test %s: %#x != %#x: FAIL\n",
+				__func__, tname, tret, eret);
 			ret = 1;
 		}
 	}
@@ -266,8 +242,8 @@ static int __init csum_tcpudp_nofold_selftest(void)
 			csum_tcpudp_nofold_data[i].proto,
 			csum_tcpudp_nofold_data[i].sum);
 		if (tret != eret) {
-			pr_err("%s: test %i: %#x != %#x: FAIL\n",
-				__func__, i, tret, eret);
+			pr_err("%s: test %s: %#x != %#x: FAIL\n",
+				__func__, csum_data[i].name, tret, eret);
 			ret = 1;
 		}
 	}
@@ -278,10 +254,7 @@ static int __init csum_tcpudp_nofold_selftest(void)
 
 static int __init csum_selftest_init(void)
 {
-	int ret =
-		do_csum_selftest() +
-		csum_partial_selftest() +
-		csum_tcpudp_nofold_selftest();
+	int ret = csum_selftest() + csum_tcpudp_nofold_selftest();
 
 	if (!ret)
 		pr_info("all tests passed!\n");
