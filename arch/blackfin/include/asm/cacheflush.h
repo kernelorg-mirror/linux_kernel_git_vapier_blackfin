@@ -9,6 +9,8 @@
 #ifndef _BLACKFIN_CACHEFLUSH_H
 #define _BLACKFIN_CACHEFLUSH_H
 
+#include <asm-generic/cacheflush.h>
+
 #include <asm/blackfin.h>	/* for SSYNC() */
 #include <asm/sections.h>	/* for _ramend */
 #ifdef CONFIG_SMP
@@ -22,14 +24,6 @@ extern void blackfin_dflush_page(void *page);
 extern void blackfin_invalidate_entire_dcache(void);
 extern void blackfin_invalidate_entire_icache(void);
 
-#define flush_dcache_mmap_lock(mapping)		do { } while (0)
-#define flush_dcache_mmap_unlock(mapping)	do { } while (0)
-#define flush_cache_mm(mm)			do { } while (0)
-#define flush_cache_range(vma, start, end)	do { } while (0)
-#define flush_cache_page(vma, vmaddr)		do { } while (0)
-#define flush_cache_vmap(start, end)		do { } while (0)
-#define flush_cache_vunmap(start, end)		do { } while (0)
-
 #ifdef CONFIG_SMP
 #define flush_icache_range_others(start, end)	\
 	smp_icache_flush_range_others((start), (end))
@@ -37,6 +31,7 @@ extern void blackfin_invalidate_entire_icache(void);
 #define flush_icache_range_others(start, end)	do { } while (0)
 #endif
 
+#undef flush_icache_range
 static inline void flush_icache_range(unsigned start, unsigned end)
 {
 #if defined(CONFIG_BFIN_EXTMEM_WRITEBACK)
@@ -71,26 +66,17 @@ static inline void flush_icache_range(unsigned start, unsigned end)
 #endif
 }
 
-#define copy_to_user_page(vma, page, vaddr, dst, src, len)		\
-do { memcpy(dst, src, len);						\
-     flush_icache_range((unsigned) (dst), (unsigned) (dst) + (len));	\
-} while (0)
-
-#define copy_from_user_page(vma, page, vaddr, dst, src, len)	memcpy(dst, src, len)
-
 #if defined(CONFIG_BFIN_DCACHE)
+# undef invalidate_dcache_range
 # define invalidate_dcache_range(start,end)	blackfin_dcache_invalidate_range((start), (end))
-#else
-# define invalidate_dcache_range(start,end)	do { } while (0)
 #endif
 #if defined(CONFIG_BFIN_EXTMEM_WRITEBACK) || defined(CONFIG_BFIN_L2_WRITEBACK)
+# undef flush_dcache_range
 # define flush_dcache_range(start,end)		blackfin_dcache_flush_range((start), (end))
-#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+# undef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+# define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+# undef flush_dcache_page
 # define flush_dcache_page(page)		blackfin_dflush_page(page_address(page))
-#else
-# define flush_dcache_range(start,end)		do { } while (0)
-#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
-# define flush_dcache_page(page)		do { } while (0)
 #endif
 
 extern unsigned long reserved_mem_dcache_on;
