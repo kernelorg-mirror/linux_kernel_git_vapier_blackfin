@@ -1,8 +1,6 @@
 #ifndef __ASM_MACH_GPIO_H
 #define __ASM_MACH_GPIO_H
 
-#include <asm-generic/gpio.h>
-
 #define gpio_to_irq(gpio)	(IRQ_GPIO_START + (gpio))
 #define irq_to_gpio(irq)	((irq) - IRQ_GPIO_START)
 

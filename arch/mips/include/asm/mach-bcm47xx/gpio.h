@@ -19,6 +19,7 @@
 extern int gpio_request(unsigned gpio, const char *label);
 extern void gpio_free(unsigned gpio);
 extern int gpio_to_irq(unsigned gpio);
+#define gpio_to_irq gpio_to_irq
 
 static inline int gpio_get_value(unsigned gpio)
 {
@@ -35,6 +36,7 @@ static inline int gpio_get_value(unsigned gpio)
 	}
 	return -EINVAL;
 }
+#define gpio_get_value gpio_get_value
 
 #define gpio_get_value_cansleep	gpio_get_value
 
@@ -55,6 +57,7 @@ static inline void gpio_set_value(unsigned gpio, int value)
 #endif
 	}
 }
+#define gpio_set_value gpio_set_value
 
 #define gpio_set_value_cansleep gpio_set_value
 

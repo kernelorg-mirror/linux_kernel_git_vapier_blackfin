@@ -13,6 +13,12 @@
 #ifndef __ASM_MACH_ATH79_GPIO_H
 #define __ASM_MACH_ATH79_GPIO_H
 
+/* We implement a few ourself */
+#define gpio_get_value gpio_get_value
+#define gpio_set_value gpio_set_value
+#define gpio_to_irq gpio_to_irq
+#define irq_to_gpio irq_to_gpio
+
 #define ARCH_NR_GPIOS	64
 #include <asm-generic/gpio.h>
 
@@ -20,7 +26,5 @@ int gpio_to_irq(unsigned gpio);
 int irq_to_gpio(unsigned irq);
 int gpio_get_value(unsigned gpio);
 void gpio_set_value(unsigned gpio, int value);
-
-#define gpio_cansleep	__gpio_cansleep
 
 #endif /* __ASM_MACH_ATH79_GPIO_H */

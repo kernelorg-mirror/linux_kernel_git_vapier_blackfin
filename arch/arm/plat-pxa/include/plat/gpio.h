@@ -1,10 +1,12 @@
 #ifndef __PLAT_GPIO_H
 #define __PLAT_GPIO_H
 
-#define __ARM_GPIOLIB_COMPLEX
-
 /* The individual machine provides register offsets and NR_BUILTIN_GPIO */
 #include <mach/gpio-pxa.h>
+
+#define gpio_get_value gpio_get_value
+#define gpio_set_value gpio_set_value
+#include <asm-generic/gpio.h>
 
 static inline int gpio_get_value(unsigned gpio)
 {
@@ -24,7 +26,5 @@ static inline void gpio_set_value(unsigned gpio, int value)
 	} else
 		__gpio_set_value(gpio, value);
 }
-
-#define gpio_cansleep		__gpio_cansleep
 
 #endif /* __PLAT_GPIO_H */

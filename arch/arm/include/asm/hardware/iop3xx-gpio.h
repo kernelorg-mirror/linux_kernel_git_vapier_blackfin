@@ -25,10 +25,13 @@
 #ifndef __ASM_ARM_HARDWARE_IOP3XX_GPIO_H
 #define __ASM_ARM_HARDWARE_IOP3XX_GPIO_H
 
+/* We implement a few ourself */
+#define gpio_get_value gpio_get_value
+#define gpio_set_value gpio_set_value
+#define gpio_cansleep gpio_cansleep
+
 #include <mach/hardware.h>
 #include <asm-generic/gpio.h>
-
-#define __ARM_GPIOLIB_COMPLEX
 
 #define IOP3XX_N_GPIOS	8
 
@@ -55,20 +58,6 @@ static inline int gpio_cansleep(unsigned gpio)
 		return 0;
 	else
 		return __gpio_cansleep(gpio);
-}
-
-/*
- * The GPIOs are not generating any interrupt
- * Note : manuals are not clear about this
- */
-static inline int gpio_to_irq(int gpio)
-{
-	return -EINVAL;
-}
-
-static inline int irq_to_gpio(int gpio)
-{
-	return -EINVAL;
 }
 
 #endif

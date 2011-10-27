@@ -24,7 +24,6 @@
 #ifndef __ASM_ARCH_PXA_GPIO_H
 #define __ASM_ARCH_PXA_GPIO_H
 
-#include <asm-generic/gpio.h>
 /* The defines for the driver are needed for the accelerated accessors */
 #include "gpio-pxa.h"
 
@@ -43,6 +42,7 @@ static inline int irq_to_gpio(unsigned int irq)
 
 	return -1;
 }
+#define irq_to_gpio irq_to_gpio
 
 #include <plat/gpio.h>
 #endif

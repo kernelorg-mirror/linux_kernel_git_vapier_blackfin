@@ -171,6 +171,29 @@ extern int __gpio_cansleep(unsigned gpio);
 
 extern int __gpio_to_irq(unsigned gpio);
 
+#ifndef gpio_get_value
+#define gpio_get_value(gpio) __gpio_get_value(gpio)
+#endif
+
+#ifndef gpio_set_value
+#define gpio_set_value(gpio, value) __gpio_set_value(gpio, value)
+#endif
+
+#ifndef gpio_cansleep
+#define gpio_cansleep(gpio) __gpio_cansleep(gpio)
+#endif
+
+#ifndef gpio_to_irq
+#define gpio_to_irq(gpio) __gpio_to_irq(gpio)
+#endif
+
+#ifndef irq_to_gpio
+static inline int irq_to_gpio(unsigned int irq)
+{
+	return -EINVAL;
+}
+#endif
+
 extern int gpio_request_one(unsigned gpio, unsigned long flags, const char *label);
 extern int gpio_request_array(const struct gpio *array, size_t num);
 extern void gpio_free_array(const struct gpio *array, size_t num);

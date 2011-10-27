@@ -1,5 +1,7 @@
 include include/asm-generic/Kbuild.asm
 
+generic-y += gpio.h
+
 header-y += boot.h
 header-y += bootparam.h
 header-y += debugreg.h

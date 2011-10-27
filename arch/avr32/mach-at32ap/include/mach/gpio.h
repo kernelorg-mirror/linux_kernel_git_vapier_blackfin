@@ -10,25 +10,12 @@
  */
 #define ARCH_NR_GPIOS	(NR_GPIO_IRQS + 2 * 32)
 
+/* We implement a few ourself */
+#define gpio_to_irq gpio_to_irq
+#define irq_to_gpio irq_to_gpio
 
 /* Arch-neutral GPIO API, supporting both "native" and external GPIOs. */
 #include <asm-generic/gpio.h>
-
-static inline int gpio_get_value(unsigned int gpio)
-{
-	return __gpio_get_value(gpio);
-}
-
-static inline void gpio_set_value(unsigned int gpio, int value)
-{
-	__gpio_set_value(gpio, value);
-}
-
-static inline int gpio_cansleep(unsigned int gpio)
-{
-	return __gpio_cansleep(gpio);
-}
-
 
 static inline int gpio_to_irq(unsigned int gpio)
 {

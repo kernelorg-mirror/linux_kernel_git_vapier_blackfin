@@ -15,5 +15,6 @@
  * Map IRQ number to GPIO line.
  */
 extern int irq_to_gpio(unsigned int irq);
+#define irq_to_gpio irq_to_gpio
 
 #endif

@@ -13,9 +13,12 @@
 #ifndef	__DAVINCI_GPIO_H
 #define	__DAVINCI_GPIO_H
 
-#include <asm-generic/gpio.h>
+/* We implement a few ourself */
+#define gpio_set_value gpio_set_value
+#define gpio_get_value gpio_get_value
+#define gpio_cansleep gpio_cansleep
 
-#define __ARM_GPIOLIB_COMPLEX
+#include <asm-generic/gpio.h>
 
 /* The inline versions use the static inlines in the driver header */
 #include "gpio-davinci.h"
@@ -77,12 +80,6 @@ static inline int gpio_cansleep(unsigned gpio)
 		return 0;
 	else
 		return __gpio_cansleep(gpio);
-}
-
-static inline int irq_to_gpio(unsigned irq)
-{
-	/* don't support the reverse mapping */
-	return -ENOSYS;
 }
 
 #endif				/* __DAVINCI_GPIO_H */

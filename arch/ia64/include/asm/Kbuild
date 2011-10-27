@@ -1,5 +1,7 @@
 include include/asm-generic/Kbuild.asm
 
+generic-y += gpio.h
+
 header-y += break.h
 header-y += fpu.h
 header-y += gcc_intrin.h

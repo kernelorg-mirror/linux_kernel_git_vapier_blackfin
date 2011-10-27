@@ -10,23 +10,7 @@
 #ifndef __ASM_ARCH_GPIO_H
 #define __ASM_ARCH_GPIO_H
 
-#include <linux/kernel.h>
-#include <linux/errno.h>
-
 #define ARCH_NR_GPIOS 1024
 #include <linux/sh_pfc.h>
-
-#ifdef CONFIG_GPIOLIB
-
-static inline int irq_to_gpio(unsigned int irq)
-{
-	return -ENOSYS;
-}
-
-#else
-
-#define __ARM_GPIOLIB_COMPLEX
-
-#endif /* CONFIG_GPIOLIB */
 
 #endif /* __ASM_ARCH_GPIO_H */

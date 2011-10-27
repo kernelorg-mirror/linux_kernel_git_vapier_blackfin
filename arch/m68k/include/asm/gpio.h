@@ -16,6 +16,13 @@
 #ifndef coldfire_gpio_h
 #define coldfire_gpio_h
 
+/* We implement a few ourself */
+#define gpio_get_value gpio_get_value
+#define gpio_set_value gpio_set_value
+#define gpio_cansleep gpio_cansleep
+#define gpio_to_irq gpio_to_irq
+#define irq_to_gpio irq_to_gpio
+
 #include <linux/io.h>
 #include <asm-generic/gpio.h>
 #include <asm/coldfire.h>

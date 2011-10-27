@@ -1,5 +1,7 @@
 include include/asm-generic/Kbuild.asm
 
+generic-y += gpio.h
+
 header-y += auxvec.h
 header-y += bootx.h
 header-y += byteorder.h

@@ -13,6 +13,12 @@
 #ifndef __UNICORE_GPIO_H__
 #define __UNICORE_GPIO_H__
 
+/* We implement a few ourself */
+#define gpio_get_value gpio_get_value
+#define gpio_set_value gpio_set_value
+#define gpio_to_irq gpio_to_irq
+#define irq_to_gpio irq_to_gpio
+
 #include <linux/io.h>
 #include <asm/irq.h>
 #include <mach/hardware.h>
@@ -82,8 +88,6 @@ static inline void gpio_set_value(unsigned gpio, int value)
 	else
 		__gpio_set_value(gpio, value);
 }
-
-#define gpio_cansleep	__gpio_cansleep
 
 static inline unsigned gpio_to_irq(unsigned gpio)
 {

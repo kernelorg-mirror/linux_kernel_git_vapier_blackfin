@@ -26,5 +26,6 @@ static inline int irq_to_gpio(unsigned irq)
 {
 	return irq;
 }
+#define irq_to_gpio irq_to_gpio
 
 #endif

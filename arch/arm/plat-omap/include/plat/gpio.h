@@ -219,9 +219,6 @@ extern void omap_gpio_restore_context(void);
  * The original OMAP-specific calls should eventually be removed.
  */
 
-#include <linux/errno.h>
-#include <asm-generic/gpio.h>
-
 static inline int irq_to_gpio(unsigned irq)
 {
 	int tmp;
@@ -238,5 +235,6 @@ static inline int irq_to_gpio(unsigned irq)
 	/* we don't supply reverse mappings for non-SOC gpios */
 	return -EIO;
 }
+#define irq_to_gpio irq_to_gpio
 
 #endif

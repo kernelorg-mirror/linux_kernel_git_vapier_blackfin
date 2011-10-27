@@ -24,11 +24,15 @@
 #ifndef __ASM_ARCH_SA1100_GPIO_H
 #define __ASM_ARCH_SA1100_GPIO_H
 
+/* We implement a few ourself */
+#define gpio_get_value gpio_get_value
+#define gpio_set_value gpio_set_value
+#define gpio_to_irq(gpio)	((gpio < 11) ? (IRQ_GPIO0 + gpio) : \
+					(IRQ_GPIO11 - 11 + gpio))
+
 #include <mach/hardware.h>
 #include <asm/irq.h>
 #include <asm-generic/gpio.h>
-
-#define __ARM_GPIOLIB_COMPLEX
 
 static inline int gpio_get_value(unsigned gpio)
 {
@@ -48,10 +52,5 @@ static inline void gpio_set_value(unsigned gpio, int value)
 	else
 		__gpio_set_value(gpio, value);
 }
-
-#define gpio_cansleep	__gpio_cansleep
-
-#define gpio_to_irq(gpio)	((gpio < 11) ? (IRQ_GPIO0 + gpio) : \
-					(IRQ_GPIO11 - 11 + gpio))
 
 #endif

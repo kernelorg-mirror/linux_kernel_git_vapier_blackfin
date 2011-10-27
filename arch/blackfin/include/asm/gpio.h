@@ -189,6 +189,12 @@ void bfin_gpio_set_value(unsigned gpio, int value);
 #include <asm/errno.h>
 
 #ifdef CONFIG_GPIOLIB
+
+/* We implement a few ourself */
+#define gpio_get_value gpio_get_value
+#define gpio_set_value gpio_set_value
+#define irq_to_gpio irq_to_gpio
+
 #include <asm-generic/gpio.h>		/* cansleep wrappers */
 
 static inline int gpio_get_value(unsigned int gpio)
@@ -205,16 +211,6 @@ static inline void gpio_set_value(unsigned int gpio, int value)
 		bfin_gpio_set_value(gpio, value);
 	else
 		__gpio_set_value(gpio, value);
-}
-
-static inline int gpio_cansleep(unsigned int gpio)
-{
-	return __gpio_cansleep(gpio);
-}
-
-static inline int gpio_to_irq(unsigned gpio)
-{
-	return __gpio_to_irq(gpio);
 }
 
 #else /* !CONFIG_GPIOLIB */
