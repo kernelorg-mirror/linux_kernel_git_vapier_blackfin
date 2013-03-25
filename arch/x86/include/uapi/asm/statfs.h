@@ -8,5 +8,10 @@
  */
 #define ARCH_PACK_COMPAT_STATFS64 __attribute__((packed,aligned(4)))
 
+/* For x86-64, both the 64bit and x32 ABIs have 64bit fields. */
+#ifdef __x86_64__
+#define __statfs_word __u64
+#endif
+
 #include <asm-generic/statfs.h>
 #endif /* _ASM_X86_STATFS_H */
