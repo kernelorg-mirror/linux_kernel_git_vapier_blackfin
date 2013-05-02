@@ -19,14 +19,13 @@
 #include <linux/init.h>
 #include <linux/irq.h>
 #include <linux/irqdomain.h>
+#include <linux/irqchip/chained_irq.h>
 #include <linux/io.h>
 #include <linux/of.h>
 #include <linux/of_device.h>
 #include <linux/platform_device.h>
 #include <linux/syscore_ops.h>
 #include <linux/slab.h>
-
-#include <asm/mach/irq.h>
 
 #include <mach/irqs.h>
 
@@ -642,7 +641,12 @@ static struct platform_driver pxa_gpio_driver = {
 		.of_match_table = of_match_ptr(pxa_gpio_dt_ids),
 	},
 };
-module_platform_driver(pxa_gpio_driver);
+
+static int __init pxa_gpio_init(void)
+{
+	return platform_driver_register(&pxa_gpio_driver);
+}
+postcore_initcall(pxa_gpio_init);
 
 #ifdef CONFIG_PM
 static int pxa_gpio_suspend(void)
