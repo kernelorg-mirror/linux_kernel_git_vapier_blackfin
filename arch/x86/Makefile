@@ -249,8 +249,10 @@ ifneq ($(RETPOLINE_CFLAGS),)
 endif
 endif
 
+ifneq ($(filter-out headers_install,$(MAKECMDGOALS)),)
 archscripts: scripts_basic
 	$(Q)$(MAKE) $(build)=arch/x86/tools relocs
+endif
 
 ###
 # Syscall table generation
